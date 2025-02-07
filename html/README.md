@@ -2,8 +2,8 @@
 
 🎉 The Smart Birthday Manager is a powerful tool for managing and recording the birthdays of your friends and family. It supports both Gregorian and lunar calendars and provides thoughtful birthday reminders. Here is a detailed description of the project:
 
-![Rendering 1](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/html/rendering2.jpg)
-![Rendering 2](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/html/rendering1.jpg)
+![Rendering 1](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/main/html/rendering2.jpg)
+![Rendering 2](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/main/html/rendering1.jpg)
 
 ## Feature Overview
 
