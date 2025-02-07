@@ -23,7 +23,7 @@ class BirthdayReminder(QMainWindow):
                            "Author: Jaime A. Quiroga P.\n"
                            "Company: GTRONICK\n"
                            "Last updated: 01/10/2021 (dd/mm/yyyy), 15:18.\n"
-                           "Available at: https://github.com/GTRONICK/QSS/blob/master/Ubuntu.qss\n"
+                           "Available at: https://github.com/GTRONICK/QSS/blob/master/Ubuntu.qss\n&#34;"
                            "*/\n"
                            "QMainWindow {\n"
                            "	background-color:#f0f0f0;\n"
@@ -532,19 +532,8 @@ class BirthdayReminder(QMainWindow):
                            "}")
 
         # 初始化数据库
-        with sqlite3.connect('files/birthday.db') as self.conn:
-            self.cursor = self.conn.cursor()
-            self.create_table()
-            self.ensure_reminded_today_column()
-            self.reset_reminded_today()
-
-        # 初始化界面
-        self.init_ui()
-
-        # 定时检查生日
-        self.check_birthdays_interval()
-
-    def create_table(self):
+        self.conn = sqlite3.connect('files/birthday.db')
+        self.cursor = self.conn.cursor()
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS contacts (
                 id INTEGER PRIMARY KEY,
@@ -556,16 +545,17 @@ class BirthdayReminder(QMainWindow):
         ''')
         self.conn.commit()
 
-    def ensure_reminded_today_column(self):
-        self.cursor.execute("PRAGMA table_info(contacts)")
-        columns = [column[1] for column in self.cursor.fetchall()]
-        if 'reminded_today' not in columns:
-            self.cursor.execute("ALTER TABLE contacts ADD COLUMN reminded_today INTEGER DEFAULT 0")
-            self.conn.commit()
+        # 检查并添加 reminded_today 列（如果不存在）
+        self.ensure_reminded_today_column()
 
-    def reset_reminded_today(self):
-        self.cursor.execute("UPDATE contacts SET reminded_today = 0")
-        self.conn.commit()
+        # 每天重置 reminded_today 列
+        self.reset_reminded_today()
+
+        # 初始化界面
+        self.init_ui()
+
+        # 定时检查生日
+        self.check_birthdays_interval()
 
     def init_ui(self):
         # 创建主布局
@@ -634,37 +624,63 @@ class BirthdayReminder(QMainWindow):
             if type_ == "国历":
                 birthday = datetime.strptime(birthday_str, "%Y-%m-%d")
             else:
-                birthday = self.lunar_to_solar(birthday_str)
+                birthday = datetime.strptime(birthday_str, "%Y-%m-%d")
             age = datetime.now().year - birthday.year
         except ValueError:
             age = 0
         return age
 
-    def lunar_to_solar(self, lunar_str):
-        year, month, day = map(int, lunar_str.split('-'))
-        lunar = sxtwl.fromLunar(year, month, day)
-        solar = sxtwl.fromSolar(lunar.getSolarYear(), lunar.getSolarMonth(), lunar.getSolarDay())
-        return datetime(solar.getSolarYear(), solar.getSolarMonth(), solar.getSolarDay())
-
     def add_contact(self):
         name, ok = QInputDialog.getText(self, "添加联系人", "姓名:")
-        if ok and name:
-            birthday_str = self.get_date("添加联系人", "选择生日")
-            if birthday_str:
-                type_ = self.get_type("添加联系人", "生日类型")
-                if type_ in ["农历", "国历"]:
-                    with sqlite3.connect('files/birthday.db') as conn:
-                        cursor = conn.cursor()
-                        cursor.execute("INSERT INTO contacts (name, birthday, type) VALUES (?,?,?)",
-                                       (name, birthday_str, type_))
-                        conn.commit()
-                    self.refresh_contacts()
+        a = len(self.get_contacts())
+        b = 0
+        for i in range(a):
+            if name in self.get_contacts()[i]:
+                b = 1
+        if b:
+            selected_id = name
+            if ok and name:
+                birthday_str = self.get_date("编辑联系人", "选择新生日")
+                if birthday_str:
+                    try:
+                        birthday = datetime.strptime(birthday_str, "%Y-%m-%d")
+                    except ValueError:
+                        birthday = datetime.strptime(birthday_str, "%m/%d/%y")
+                        birthday_str = birthday.strftime("%Y-%m-%d")
+                    type_ = self.get_type("编辑联系人", "新生日类型")
+                    if type_ in ["农历", "国历"]:
+                        self.cursor.execute("UPDATE contacts SET name =?, birthday =?, type =? WHERE name =?",
+                                            (name, birthday_str, type_, selected_id))
+                        self.conn.commit()
+                        self.refresh_contacts()
+                    else:
+                        QMessageBox.warning(self, "警告", "生日类型必须是'农历'或'国历'")
                 else:
-                    QMessageBox.warning(self, "警告", "生日类型必须是'农历'或'国历'")
+                    QMessageBox.warning(self, "警告", "请选择有效的日期")
             else:
-                QMessageBox.warning(self, "警告", "请选择有效的日期")
+                QMessageBox.warning(self, "警告", "请输入有效内容")
         else:
-            QMessageBox.warning(self, "警告", "请输入有效内容")
+            if ok and name:
+                birthday_str = self.get_date("添加联系人", "选择生日")
+                if birthday_str:
+                    try:
+                        birthday = datetime.strptime(birthday_str, "%Y-%m-%d")
+                    except ValueError:
+                        birthday = datetime.strptime(birthday_str, "%m/%d/%y")
+                        birthday_str = birthday.strftime("%Y-%m-%d")
+                    type_ = self.get_type("添加联系人", "生日类型")
+                    print(type_)
+                    if type_ in ["农历", "国历"]:
+                        self.cursor.execute("INSERT INTO contacts (name, birthday, type) VALUES (?,?,?)",
+                                            (name, birthday_str, type_))
+                        self.conn.commit()
+                        self.refresh_contacts()
+                    else:
+                        QMessageBox.warning(self, "警告", "生日类型必须是'农历'或'国历'")
+                else:
+                    QMessageBox.warning(self, "警告", "请选择有效的日期")
+            else:
+                QMessageBox.warning(self, "警告", "请输入有效内容")
 
     def edit_contact(self):
         selected_row = self.contacts_table.currentRow()
@@ -677,13 +693,16 @@ class BirthdayReminder(QMainWindow):
         if ok and name:
             birthday_str = self.get_date("编辑联系人", "选择新生日")
             if birthday_str:
+                try:
+                    birthday = datetime.strptime(birthday_str, "%Y-%m-%d")
+                except ValueError:
+                    birthday = datetime.strptime(birthday_str, "%m/%d/%y")
+                    birthday_str = birthday.strftime("%Y-%m-%d")
                 type_ = self.get_type("编辑联系人", "新生日类型")
                 if type_ in ["农历", "国历"]:
-                    with sqlite3.connect('files/birthday.db') as conn:
-                        cursor = conn.cursor()
-                        cursor.execute("UPDATE contacts SET name =?, birthday =?, type =? WHERE name =?",
-                                       (name, birthday_str, type_, selected_id))
-                        conn.commit()
+                    self.cursor.execute("UPDATE contacts SET name =?, birthday =?, type =? WHERE name =?",
+                                        (name, birthday_str, type_, selected_id))
+                    self.conn.commit()
                     self.refresh_contacts()
                 else:
                     QMessageBox.warning(self, "警告", "生日类型必须是'农历'或'国历'")
@@ -701,10 +720,8 @@ class BirthdayReminder(QMainWindow):
         selected_id = self.contacts_table.item(selected_row, 0).text()
         reply = QMessageBox.question(self, "确认删除", "确定要删除这个联系人吗？", QMessageBox.Yes | QMessageBox.No)
         if reply == QMessageBox.Yes:
-            with sqlite3.connect('files/birthday.db') as conn:
-                cursor = conn.cursor()
-                cursor.execute("DELETE FROM contacts WHERE name =?", (selected_id,))
-                conn.commit()
+            self.cursor.execute("DELETE FROM contacts WHERE name =?", (selected_id,))
+            self.conn.commit()
             self.refresh_contacts()
 
     def check_birthdays(self, remind_today=True):
@@ -716,40 +733,29 @@ class BirthdayReminder(QMainWindow):
         solar = sxtwl.fromLunar(lunar.getSolarYear(), lunar.getSolarMonth(), lunar.getSolarDay())
         lunartoday = f"{solar.getLunarMonth():02d}-{solar.getLunarDay():02d}"
 
-        with sqlite3.connect('files/birthday.db') as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM contacts")
-            contacts = cursor.fetchall()
-
-        for contact in contacts:
+        for contact in self.contacts:
             try:
                 birthday = datetime.strptime(contact[2], "%Y-%m-%d").strftime("%m-%d")
             except ValueError:
                 birthday = datetime.strptime(contact[2], "%m/%d/%y").strftime("%m-%d")
-                with sqlite3.connect('files/birthday.db') as conn:
-                    cursor = conn.cursor()
-                    cursor.execute("UPDATE contacts SET birthday =? WHERE id =?",
-                                   (birthday, contact[0]))
-                    conn.commit()
+                self.cursor.execute("UPDATE contacts SET birthday =? WHERE id =?",
+                                    (birthday, contact[0]))
+                self.conn.commit()
 
             if birthday == solartoday and (remind_today or contact[4] == 0) and contact[3] == '国历':
                 age = datetime.now().year - datetime.strptime(contact[2], "%Y-%m-%d").year
                 response = QMessageBox.question(self, "生日提醒", f"今天是{contact[1]}的生日！TA今天{age}岁了。\n今天不再提醒？",
                                                 QMessageBox.Yes | QMessageBox.No)
                 if response == QMessageBox.Yes:
-                    with sqlite3.connect('files/birthday.db') as conn:
-                        cursor = conn.cursor()
-                        cursor.execute("UPDATE contacts SET reminded_today = 1 WHERE name =?", (contact[1],))
-                        conn.commit()
+                    self.cursor.execute("UPDATE contacts SET reminded_today = 1 WHERE name =?", (contact[1],))
+                    self.conn.commit()
             if birthday == lunartoday and (remind_today or contact[4] == 0) and contact[3] == '农历':
                 age = datetime.now().year - datetime.strptime(contact[2], "%Y-%m-%d").year
                 response = QMessageBox.question(self, "生日提醒", f"今天是{contact[1]}的生日！TA今天{age}岁了。\n今天不再提醒？",
                                                 QMessageBox.Yes | QMessageBox.No)
                 if response == QMessageBox.Yes:
-                    with sqlite3.connect('files/birthday.db') as conn:
-                        cursor = conn.cursor()
-                        cursor.execute("UPDATE contacts SET reminded_today = 1 WHERE name =?", (contact[1],))
-                        conn.commit()
+                    self.cursor.execute("UPDATE contacts SET reminded_today = 1 WHERE name =?", (contact[1],))
+                    self.conn.commit()
 
     def check_today_birthdays(self):
         self.check_birthdays(remind_today=True)
@@ -759,11 +765,20 @@ class BirthdayReminder(QMainWindow):
         # 使用 QTimer 每天检查一次
         QTimer.singleShot(86400000, self.check_birthdays_interval)
 
+    def reset_reminded_today(self):
+        self.cursor.execute("UPDATE contacts SET reminded_today = 0")
+        self.conn.commit()
+
+    def ensure_reminded_today_column(self):
+        self.cursor.execute("PRAGMA table_info(contacts)")
+        columns = [column[1] for column in self.cursor.fetchall()]
+        if 'reminded_today' not in columns:
+            self.cursor.execute("ALTER TABLE contacts ADD COLUMN reminded_today INTEGER DEFAULT 0")
+            self.conn.commit()
+
     def get_contacts(self):
-        with sqlite3.connect('files/birthday.db') as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM contacts")
-            return cursor.fetchall()
+        self.cursor.execute("SELECT * FROM contacts")
+        return self.cursor.fetchall()
 
     def get_date(self, title, prompt):
         dialog = QDialog(self)
@@ -819,6 +834,9 @@ class BirthdayReminder(QMainWindow):
         dialog.exec_()
 
         return "国历" if solar_radio.isChecked() else "农历"
+
+    def __del__(self):
+        self.conn.close()
 
 
 if __name__ == "__main__":
