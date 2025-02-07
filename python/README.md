@@ -3,7 +3,7 @@
 ## Introduction
 The Birthday Reminder Program is a Python-based graphical user interface (GUI) application designed to help users record and manage contact birthdays and provide reminder functionality on their birthdays. Users can add, edit, and delete contacts, and sort the contact list based on different criteria.
 
-![Rendering](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/python-version/rendering.png)
+![Rendering](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/main/python/rendering.png)
 
 ## Features
 1. **Contact Management**: Supports adding, editing, and deleting basic contact information, including name, birthday, and birthday type (lunar or Gregorian).
