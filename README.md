@@ -3,6 +3,6 @@ Intelligent Birthday Butler is a powerful birthday management tool that helps yo
 ## See all README.md:  1. [Python-version](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/main/python/README.md)   2. [HTML-version](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/main/html/README.md)
 
 ### Some renderings:
-[1.(py)](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/main/python/rendering.png)
-[2.(web)](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/main/html/rendering2.jpg)
-[3.(phone)](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/main/html/rendering1.jpg)
+![1.(py)](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/main/python/rendering.png)
+![2.(web)](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/main/html/rendering2.jpg)
+![3.(phone)](https://github.com/Jessssssseea/Intelligent-Birthday-Butler/blob/main/html/rendering1.jpg)
