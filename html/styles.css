@@ -1,0 +1,612 @@
+/* 添加新的动画关键帧 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* 表格行动画 */
+tr {
+    animation: fadeIn 0.4s ease forwards;
+    opacity: 0; /* 初始状态 */
+}
+
+/* 按钮点击动画 */
+button:active {
+    transform: scale(0.96) translateY(0);
+}
+
+/* 增强主题切换过渡 */
+body,
+button,
+input,
+.container,
+theme-button {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 优化通知动画 */
+.notification {
+    animation: slideIn 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transition: opacity 0.2s;
+}
+
+.notification.hide {
+    animation: slideOut 0.3s ease forwards;
+}
+
+/* 模态框关闭动画 */
+.modal-content.closing {
+    animation: modalClose 0.2s ease forwards;
+}
+
+@keyframes modalClose {
+    to {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+}
+
+/* 调整主题按钮位置和大小 */
+theme-button {
+    position: fixed;
+    right: -50px;
+    bottom: 90px;
+    z-index: 1000;
+    transform: scale(0.55) rotate(-90deg);
+    transform-origin: bottom right;
+    cursor: pointer;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 按钮按下效果 */
+.theme-toggle-button:active {
+    transform: scale(0.95);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+theme-button[value="dark"] {
+    background-color: var(--primary-color);
+}
+
+theme-button[value="light"] {
+    background-color: var(--secondary-color);
+}
+
+/* 修改原有.theme-toggle-wrapper样式 */
+.theme-toggle-wrapper {
+    position: fixed;
+    right: -82px;
+    bottom: 12px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle-text {
+    font-size: 12px;
+    color: var(--text-color); /* 使用主题颜色变量 */
+    text-align: center;
+    margin-top: 5px;
+}
+
+/* 定义主题颜色变量 */
+:root {
+    --primary-color: #2196F3;
+    --secondary-color: #FF4081;
+    --background-color: #ffffff;
+    --text-color: #333333;
+    --card-bg: #ffffff;
+    --border-color: #e0e0e0;
+    --hover-bg: #f5f5f5;
+}
+
+[data-theme="dark"] {
+    --background-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --card-bg: #2d2d2d;
+    --border-color: #404040;
+    --hover-bg: #3d3d3d;
+    --primary-color: #64B5F6;
+    --secondary-color: #FF79B0;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 20px;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    animation: fadeInUp 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    opacity: 0; /* 初始状态 */
+}
+
+h1, h2 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    font-weight: 300;
+    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+h2 {
+    font-size: 3rem;
+    font-weight: 200;
+}
+
+.toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    justify-content: center;
+    width: 100%;
+}
+
+/* 按钮基础样式 */
+button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 按钮悬停效果 */
+button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 按钮按下效果 */
+button:active {
+    transform: scale(0.95) translateY(2px); /* 按下时缩小并向下移动 */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 按下时阴影变浅 */
+    background-color: var(--primary-color-pressed); /* 按下时背景颜色变化 */
+}
+
+/* 按钮禁用状态 */
+button:disabled {
+    background-color: var(--disabled-color);
+    color: var(--text-disabled-color);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* 按钮禁用状态的悬停效果 */
+button:disabled:hover {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* 按钮禁用状态的按下效果 */
+button:disabled:active {
+    transform: scale(1);
+    box-shadow: none;
+}
+
+/* 定义主题颜色变量 */
+:root {
+    --primary-color: #2196F3; /* 主按钮颜色 */
+    --primary-color-pressed: #1976D2; /* 按钮按下时的颜色 */
+    --secondary-color: #FF4081; /* 次级按钮颜色 */
+    --disabled-color: #E0E0E0; /* 禁用按钮颜色 */
+    --text-disabled-color: #9E9E9E; /* 禁用按钮文字颜色 */
+}
+
+[data-theme="dark"] {
+    --primary-color: #64B5F6;
+    --primary-color-pressed: #42A5F5;
+    --secondary-color: #FF79B0;
+    --disabled-color: #616161;
+    --text-disabled-color: #BDBDBD;
+}
+
+button.secondary {
+    background-color: var(--secondary-color);
+}
+
+.search-box {
+    width: 40%;
+    max-width: 500px;
+    padding: 0 0px;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--card-bg);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    margin: 0 -16px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    background-color: var(--hover-bg);
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+}
+
+th:hover {
+    background-color: var(--hover-bg);
+}
+
+tr:hover {
+    background-color: var(--hover-bg);
+}
+
+.sort-icon {
+    margin-left: 0.5rem;
+    font-size: 0.8em;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    transform: scale(0.95);
+    animation: modalOpen 0.3s ease forwards;
+}
+
+@keyframes modalOpen {
+    to { transform: scale(1); }
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    padding: 0 10px;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    background: var(--card-bg);
+    color: var(--text-color);
+    margin: 0 10px;
+}
+
+.type-toggle {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 0 10px;
+}
+
+.type-toggle label {
+    flex: 1;
+    text-align: center;
+    padding: 0.8rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.type-toggle input:checked + label {
+    border-color: var(--primary-color);
+    background-color: rgba(100, 181, 246, 0.1);
+}
+
+.lunar-fields {
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0 10px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.notification {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: var(--card-bg);
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: none;
+    z-index: 1000;
+    border-left: 4px solid var(--primary-color);
+    animation: slideIn 0.3s ease;
+}
+
+td > button {
+    margin: 0 5px;
+    display: inline-flex;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+/* 默认情况下（电脑模式），隐藏文字 */
+.theme-toggle-text-2 {
+    display: none;
+}
+
+/* 通知容器样式 */
+#notificationsContainer {
+    display: flex;
+    flex-direction: column-reverse; /* 新通知出现在顶部 */
+    gap: 10px; /* 消息之间的间距 */
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    width: 200px;
+    pointer-events: none; /* 确保通知不会干扰页面其他部分的点击事件 */
+}
+
+/* 通知样式 */
+.notification {
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background-color: var(--card-bg);
+    border-left: 4px solid transparent; /* 初始状态无边框颜色 */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateX(100%); /* 初始位置在屏幕外 */
+    display: block;
+}
+
+/* 当通知可见时应用的类 */
+.notification.visible {
+    opacity: 1;
+    transform: translateX(0); /* 动画结束后的最终位置 */
+}
+
+/* 不同类型的通知边框颜色 */
+.notification.info { border-left-color: var(--primary-color); }
+.notification.success { border-left-color: #4caf50; }
+.notification.warning { border-left-color: #ff9800; }
+.notification.error { border-left-color: #f44336; }
+
+/* 进入动画 */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(100%); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* 通知容器样式 */
+#notificationsContainer {
+    display: flex;
+    flex-direction: column; /* 垂直排列，新的通知会自动排在下面 */
+    gap: 10px; /* 消息之间的间距 */
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    width: 200px;
+    pointer-events: none; /* 确保通知不会干扰页面其他部分的点击事件 */
+}
+
+/* 手机模式 */
+@media (max-width: 768px) {
+    .button-group {
+        flex-wrap: wrap; /* 允许按钮换行 */
+        justify-content: center; /* 按钮往中间靠拢 */
+    }
+
+    .button-group button {
+        flex: 1 -1 48%; /* 每个按钮占48%的宽度，留出一些间距 */
+        margin-bottom: 0.3rem; /* 为每行按钮添加间距 */
+    }
+
+    .toolbar {
+        position: relative;
+        padding-top: 50px; /* 为切换按钮留出空间 */
+    }
+
+    .theme-toggle-wrapper {
+        position: absolute;
+        top: 50px;
+        right: 35%;
+        bottom: auto;
+        transform: translateX(50%) rotate(-90deg);
+        flex-direction: row-reverse;
+        gap: 0px;
+    }
+
+    theme-button {
+        transform: scale(0.5) rotate(90deg);
+        transform-origin: center;
+        margin: 0;
+    }
+
+    .theme-toggle-text {
+        transform: rotate(90deg);
+        font-size: 12px;
+        white-space: nowrap;
+        display: none;
+    }
+
+    .button-group {
+        width: 100%;
+        order: 2;
+    }
+
+    .search-box {
+        order: 3;
+        width: 78%;
+    }
+
+    .container {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    th, td {
+        padding: 0.8rem;
+    }
+
+    .lunar-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .theme-toggle {
+        left: 10px;
+        bottom: 10px;
+    }
+
+    td > button {
+        margin: 5px;
+        width: 100%;
+    }
+
+    .modal-buttons {
+        flex-direction: column;
+    }
+
+    @media (max-width: 768px) {
+        .theme-toggle-text-2 {
+            display: block;
+            font-size: 13px;
+            white-space: nowrap;
+            position: absolute; /* 使用绝对定位 */
+            top: 0px;
+            right: 40;
+            transform: translateX(74%); /* 确保文字不会遮挡按钮 */
+        }
+    }
+}
+
+/* 电脑端样式 */
+@media (min-width: 769px) {
+    .button-group {
+        flex-wrap: nowrap;
+        width: auto;
+    }
+
+    .search-box {
+        width: 40%;
+        min-width: 300px;
+    }
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎂 智能生日管家</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/lunar-calendar@0.3.5/lib/lunar-calendar.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h2>🎂</h2>
+        <h1><b>智能生日管家</b></h1>
+        <div class="toolbar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍搜索姓名..." oninput="filterContacts()">
+            </div>
+            <div class="button-group">
+                <button onclick="openAddModal()">
+                    <span>➕</span> 添加生日
+                </button>
+                <button class="secondary" onclick="checkBirthdays()">
+                    <span>🔔</span> 检查生日
+                </button>
+                <button class="secondary" onclick="exportData()">
+                    <span>📤</span> 导出数据
+                </button>
+                <button onclick="importData()">
+                    <span>📥</span> 导入数据
+                </button>
+            </div>
+            <div class="theme-toggle-wrapper">
+                <theme-button value="dark" id="themeButton"></theme-button>
+                <div class="theme-toggle-text">切换主题模式</div>
+            </div>
+            <div class="theme-toggle-text-2">切换主题模式</div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th onclick="sortBy('name')">姓名 <span class="sort-icon"></span></th>
+                    <th onclick="sortBy('birthday')">出生日期 <span class="sort-icon"></span></th>
+                    <th onclick="sortBy('type')">生日类型 <span class="sort-icon"></span></th>
+                    <th onclick="sortBy('age')">年龄 <span class="sort-icon"></span></th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="contactsBody"></tbody>
+        </table>
+    </div>
+    <!-- 添加/编辑模态框 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">×</span>
+            <h2 id="modalTitle">添加生日</h2>
+            <div class="form-group">
+                <label>姓名</label>
+                <input type="text" id="editName" required>
+            </div>
+            <div class="type-toggle">
+                <input type="radio" name="calendarType" id="solarType" value="阳历" checked onchange="toggleCalendarType()">
+                <label for="solarType">阳历</label>
+                <input type="radio" name="calendarType" id="lunarType" value="农历" onchange="toggleCalendarType()">
+                <label for="lunarType">农历</label>
+            </div>
+            <div class="form-group solar-fields">
+                <label>阳历生日</label>
+                <input type="date" id="solarDate" required>
+            </div>
+            <div class="lunar-fields">
+                <div class="form-group">
+                    <label>农历年份</label>
+                    <input type="number" id="lunarYear" min="1900" max="2100">
+                </div>
+                <div class="form-group">
+                    <label>农历月份</label>
+                    <input type="number" id="lunarMonth" min="1" max="12">
+                </div>
+                <div class="form-group">
+                    <label>农历日期</label>
+                    <input type="number" id="lunarDay" min="1" max="30">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="modal-buttons">
+                    <button onclick="saveContact()">✔️ 保存</button>
+                    <button class="secondary" onclick="closeModal()">❌ 取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 删除确认模态框 -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeDeleteConfirmModal()">×</span>
+            <h2>确认删除</h2>
+            <p>确定要删除这个生日记录吗？</p>
+            <div class="modal-buttons">
+                <button onclick="confirmDelete()">✔️ 确定</button>
+                <button class="secondary" onclick="closeDeleteConfirmModal()">❌ 取消</button>
+            </div>
+        </div>
+    </div>
+    <!-- 通知弹窗 -->
+    <div id="notification" class="notification"></div>
+    <!-- 通知容器 -->
+    <div id="notificationsContainer"></div>
+    <script src="scripts.js"></script>
+</body>
+</html>
