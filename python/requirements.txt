@@ -1,0 +1,2 @@
+sxtwl==2.0.7
+tkcalendar==1.6.1
